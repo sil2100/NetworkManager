@@ -1814,8 +1814,10 @@ cull_scan_list (NMDeviceWifi *self)
 		 * supplicant in the last scan.
 		 */
 		if (   nm_ap_get_supplicant_path (ap)
-		    && g_object_get_data (G_OBJECT (ap), WPAS_REMOVED_TAG) == NULL)
+		    && g_object_get_data (G_OBJECT (ap), WPAS_REMOVED_TAG) == NULL) {
+			nm_ap_set_last_seen (ap, nm_utils_get_monotonic_timestamp_s ());
 			continue;
+		}
 
 		last_seen = nm_ap_get_last_seen (ap);
 		if (!last_seen || last_seen + prune_interval_s < now)
