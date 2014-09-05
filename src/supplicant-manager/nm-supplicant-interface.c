@@ -1176,10 +1176,11 @@ scan_request_cb (DBusGProxy *proxy, DBusGProxyCall *call_id, gpointer user_data)
 	GError *err = NULL;
 
 	nm_call_store_remove (priv->other_pcalls, proxy, call_id);
-	if (!dbus_g_proxy_end_call (proxy, call_id, &err, G_TYPE_INVALID))
+	if (!dbus_g_proxy_end_call (proxy, call_id, &err, G_TYPE_INVALID)) {
 		nm_log_warn (LOGD_SUPPLICANT, "Could not get scan request result: %s", err->message);
+		g_signal_emit (self, signals[SCAN_DONE], 0, FALSE);
+	}
 
-	g_signal_emit (self, signals[SCAN_DONE], 0, err ? FALSE : TRUE);
 	g_clear_error (&err);
 }
 
